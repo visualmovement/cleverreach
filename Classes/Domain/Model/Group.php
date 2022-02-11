@@ -1,5 +1,6 @@
 <?php
-namespace WapplerSystems\Cleverreach\Domain\Model;
+declare(strict_types=1);
+namespace Supseven\Cleverreach\Domain\Model;
 
 /**
  * This file is part of the "cleverreach" Extension for TYPO3 CMS.
@@ -7,8 +8,6 @@ namespace WapplerSystems\Cleverreach\Domain\Model;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
-
 class Group
 {
 
@@ -36,8 +35,6 @@ class Group
      * @var int
      */
     protected $stamp = 0;
-
-
 
     /**
      * @var bool
@@ -139,8 +136,4 @@ class Group
     {
         $this->stamp = $stamp;
     }
-
-
-
-
 }

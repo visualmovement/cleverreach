@@ -1,5 +1,9 @@
 <?php
-namespace WapplerSystems\Cleverreach\Powermail\Validator;
+declare(strict_types=1);
+namespace Supseven\Cleverreach\Powermail\Validator;
+
+use Supseven\Cleverreach\CleverReach\Api;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * This file is part of the "cleverreach" Extension for TYPO3 CMS.
@@ -7,13 +11,11 @@ namespace WapplerSystems\Cleverreach\Powermail\Validator;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
-
 class OptoutValidator
 {
 
     /**
-     * @var \WapplerSystems\Cleverreach\CleverReach\Api
+     * @var \Supseven\Cleverreach\CleverReach\Api
      * @TYPO3\CMS\Extbase\Annotation\Inject
      */
     protected $api;
@@ -29,11 +31,10 @@ class OptoutValidator
     {
         $value = trim($value);
 
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            return FALSE;
+        if (!GeneralUtility::validEmail($value)) {
+            return false;
         }
-        return $this->api->isReceiverOfGroupAndActive($value);
+
+        return GeneralUtility::makeInstance(Api::class)->isReceiverOfGroupAndActive($value);
     }
-
-
 }

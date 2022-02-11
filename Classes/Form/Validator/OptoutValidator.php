@@ -1,5 +1,6 @@
 <?php
-namespace WapplerSystems\Cleverreach\Form\Validator;
+declare(strict_types=1);
+namespace Supseven\Cleverreach\Form\Validator;
 
 /*
  * This file is part of the TYPO3 CMS project.
@@ -14,10 +15,11 @@ namespace WapplerSystems\Cleverreach\Form\Validator;
  * The TYPO3 project - inspiring people to share!
  */
 
+use Supseven\Cleverreach\CleverReach\Api;
+use Supseven\Cleverreach\Service\ConfigurationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
-use WapplerSystems\Cleverreach\Service\ConfigurationService;
 
 /**
  * Validator for email addresses
@@ -26,15 +28,6 @@ use WapplerSystems\Cleverreach\Service\ConfigurationService;
  */
 class OptoutValidator extends AbstractValidator
 {
-
-
-    /**
-     * @var \WapplerSystems\Cleverreach\CleverReach\Api
-     * @TYPO3\CMS\Extbase\Annotation\Inject
-     */
-    protected $api;
-
-
     /**
      * Checks if the given value is already in the list
      *
@@ -45,17 +38,20 @@ class OptoutValidator extends AbstractValidator
     {
 
         /** @var ConfigurationService $configurationService */
-        $configurationService = GeneralUtility::makeInstance(ObjectManager::class)->get(ConfigurationService::class);
+        $configurationService = GeneralUtility::makeInstance(ConfigurationService::class);
         $configuration = $configurationService->getConfiguration();
 
         $groupId = isset($this->options['groupId']) && \strlen($this->options['groupId']) > 0 ? $this->options['groupId'] : $configuration['groupId'];
 
         if (empty($groupId)) {
-            $this->addError('Group ID not set.',1534719428);
+            $this->addError('Group ID not set.', 1534719428);
+
             return;
         }
 
-        if (!$this->api->isReceiverOfGroupAndActive($value,$groupId)) {
+        $api = GeneralUtility::makeInstance(Api::class);
+
+        if (!$api->isReceiverOfGroupAndActive($value, $groupId)) {
             $this->addError(
                 $this->translateErrorMessage(
                     'validator.notInList',
@@ -65,5 +61,4 @@ class OptoutValidator extends AbstractValidator
             );
         }
     }
-
 }

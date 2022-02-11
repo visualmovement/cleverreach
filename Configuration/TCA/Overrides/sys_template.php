@@ -1,26 +1,25 @@
 <?php
-defined('TYPO3_MODE') or die();
+declare(strict_types=1);
 
-call_user_func(function () {
-    TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-        'cleverreach',
-        'Configuration/TypoScript/',
-        'CleverReach'
-    );
-    TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-        'cleverreach',
-        'Configuration/TypoScript/Form/',
-        'CleverReach Form'
-    );
-    TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addStaticFile(
-        'cleverreach',
-        'Configuration/TypoScript/Powermail/',
-        'CleverReach Powermail'
-    );
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 
-});
+ExtensionManagementUtility::addStaticFile(
+    'cleverreach',
+    'Configuration/TypoScript/',
+    'CleverReach'
+);
+ExtensionManagementUtility::addStaticFile(
+    'cleverreach',
+    'Configuration/TypoScript/Form/',
+    'CleverReach Form'
+);
+ExtensionManagementUtility::addStaticFile(
+    'cleverreach',
+    'Configuration/TypoScript/Powermail/',
+    'CleverReach Powermail'
+);
 
-\TYPO3\CMS\Core\Utility\ExtensionManagementUtility::registerPageTSConfigFile(
+ExtensionManagementUtility::registerPageTSConfigFile(
     'cleverreach',
     'Configuration/TsConfig/Page/powermail.tsconfig',
     'Powermail'

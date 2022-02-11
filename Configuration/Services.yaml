@@ -1,0 +1,23 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  Supseven\Cleverreach\:
+    resource: '../Classes/*'
+
+  Supseven\Cleverreach\Form\Validator\OptinValidator:
+    public: true
+
+  Supseven\Cleverreach\Form\Finishers\CleverreachFinisher:
+    public: true
+
+  Supseven\Cleverreach\Powermail\Validator\OptinValidator:
+    public: true
+
+  Supseven\Cleverreach\Powermail\Validator\OptoutValidator:
+    public: true
+
+  Supseven\Cleverreach\Powermail\Finisher\CleverReach:
+    public: true

@@ -1,6 +1,6 @@
 <?php
-
-namespace WapplerSystems\Cleverreach\CleverReach;
+declare(strict_types=1);
+namespace Supseven\Cleverreach\CleverReach;
 
 /**
  * This file is part of the "cleverreach" Extension for TYPO3 CMS.
@@ -9,47 +9,38 @@ namespace WapplerSystems\Cleverreach\CleverReach;
  * LICENSE.txt file that was distributed with this source code.
  */
 
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Supseven\Cleverreach\Domain\Model\Receiver;
+use Supseven\Cleverreach\Service\ConfigurationService;
+use Supseven\Cleverreach\Tools\Rest;
 
-use TYPO3\CMS\Core\Log\LogManager;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use WapplerSystems\Cleverreach\Domain\Model\Receiver;
-use WapplerSystems\Cleverreach\Tools\Rest;
-
-
-class Api
+class Api implements LoggerAwareInterface
 {
+    use LoggerAwareTrait;
 
+    public const MODE_OPTIN = 'optin';
+
+    public const MODE_OPTOUT = 'optout';
 
     /**
-     * @var \WapplerSystems\Cleverreach\Service\ConfigurationService
-     * @TYPO3\CMS\Extbase\Annotation\Inject
+     * @var ConfigurationService
      */
     protected $configurationService;
-
 
     /** @var Rest */
     protected $rest;
 
-
-    /** @var \TYPO3\CMS\Core\Log\Logger */
-    protected $logger;
-
-
-    const MODE_OPTIN = 'optin';
-
-    const MODE_OPTOUT = 'optout';
-
-
-    public function __construct()
+    /**
+     * @param ConfigurationService $configurationService
+     */
+    public function __construct(ConfigurationService $configurationService)
     {
-
-        $this->logger = GeneralUtility::makeInstance(LogManager::class)->getLogger(__CLASS__);
+        $this->configurationService = $configurationService;
     }
 
-
-    public function connect()
+    public function connect(): void
     {
-
         if ($this->rest !== null) {
             return;
         }
@@ -58,20 +49,19 @@ class Api
 
         try {
             //skip this part if you have an OAuth access token
-            $token = $this->rest->post('/login',
+            $token = $this->rest->post(
+                '/login',
                 [
                     'client_id' => $this->configurationService->getClientId(),
-                    'login' => $this->configurationService->getLoginName(),
-                    'password' => $this->configurationService->getPassword()
+                    'login'     => $this->configurationService->getLoginName(),
+                    'password'  => $this->configurationService->getPassword(),
                 ]
             );
             $this->rest->setAuthMode('bearer', $token);
         } catch (\Exception $ex) {
             $this->log($ex);
         }
-
     }
-
 
     /**
      * Inserts receiver to a list. Ignores, if already in list.
@@ -92,6 +82,7 @@ class Api
         if ($receivers instanceof Receiver) {
             $aReceivers[] = $receivers->toArray();
         }
+
         if (\is_array($receivers)) {
             foreach ((array)$receivers as $receiver) {
                 if ($receiver instanceof Receiver) {
@@ -99,14 +90,17 @@ class Api
                 }
             }
         }
+
         if (\is_string($receivers)) {
             $aReceivers[] = (new Receiver($receivers))->toArray();
         }
 
         try {
-            $return = $this->rest->post('/groups.json/' . $groupId . '/receivers/insert',
+            $return = $this->rest->post(
+                '/groups.json/' . $groupId . '/receivers/insert',
                 $aReceivers
             );
+
             if (\is_object($return) && $return->status === 'insert success') {
                 return true;
             }
@@ -114,10 +108,8 @@ class Api
             $this->log($ex);
         }
 
-
         return false;
     }
-
 
     /**
      * TODO
@@ -140,7 +132,6 @@ class Api
         }
     }
 
-
     /**
      * Sets receiver state to inactive
      *
@@ -162,7 +153,6 @@ class Api
         }
     }
 
-
     /**
      * Sets receiver state to inactive
      *
@@ -183,7 +173,6 @@ class Api
             $this->log($ex);
         }
     }
-
 
     /**
      * @param int $groupId
@@ -221,15 +210,16 @@ class Api
 
         try {
             $this->rest->get('/groups.json/' . $groupId . '/receivers/' . $id);
+
             return true;
         } catch (\Exception $ex) {
             if ($ex->getCode() !== 404) {
                 $this->log($ex);
             }
         }
+
         return false;
     }
-
 
     /**
      * @param mixed $id id or email
@@ -246,15 +236,16 @@ class Api
 
         try {
             $return = $this->rest->get('/groups.json/' . $groupId . '/receivers/' . $id);
+
             return Receiver::createInstance($return);
         } catch (\Exception $ex) {
             if ($ex->getCode() !== 404) {
                 $this->log($ex);
             }
         }
+
         return null;
     }
-
 
     /**
      * @param mixed $id id or email
@@ -263,15 +254,14 @@ class Api
      */
     public function isReceiverOfGroupAndActive($id, $groupId = null): bool
     {
-
-
         $receiver = $this->getReceiverOfGroup($id, $groupId);
+
         if ($receiver !== null) {
             return $receiver->isActive();
         }
+
         return false;
     }
-
 
     /**
      * @param string $email
@@ -285,38 +275,34 @@ class Api
         if ($groupId === null || $groupId === '') {
             $groupId = $this->configurationService->getGroupId();
         }
+
         if ($formId === null || $formId === '') {
             $formId = $this->configurationService->getFormId();
         }
 
         $doidata = [
-            'user_ip' => $_SERVER['REMOTE_ADDR'],
+            'user_ip'    => $_SERVER['REMOTE_ADDR'],
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-            'referer' => $_SERVER['HTTP_REFERER'],
+            'referer'    => $_SERVER['HTTP_REFERER'],
         ];
 
         try {
-            $this->rest->post('/forms.json/' . $formId . '/send/activate',
+            $this->rest->post(
+                '/forms.json/' . $formId . '/send/activate',
                 [
-                    'email' => $email,
+                    'email'     => $email,
                     'groups_id' => $groupId,
-                    'doidata' => $doidata,
+                    'doidata'   => $doidata,
                 ]
             );
-
         } catch (\Exception $ex) {
-
             if ($ex->getCode() === 404) {
                 // CleverReach sends 404
-
             }
 
             $this->log($ex);
         }
-
-
     }
-
 
     /**
      * @param string $email
@@ -327,48 +313,41 @@ class Api
     {
         $this->connect();
 
-
         if ($groupId === null) {
             $groupId = $this->configurationService->getGroupId();
         }
+
         if ($formId === null) {
             $formId = $this->configurationService->getFormId();
         }
 
         $doidata = [
-            'user_ip' => $_SERVER['REMOTE_ADDR'],
+            'user_ip'    => $_SERVER['REMOTE_ADDR'],
             'user_agent' => $_SERVER['HTTP_USER_AGENT'],
-            'referer' => $_SERVER['HTTP_REFERER'],
+            'referer'    => $_SERVER['HTTP_REFERER'],
         ];
 
         try {
-            $this->rest->post('/forms.json/' . $formId . '/send/deactivate',
+            $this->rest->post(
+                '/forms.json/' . $formId . '/send/deactivate',
                 [
-                    'email' => $email,
+                    'email'     => $email,
                     'groups_id' => $groupId,
-                    'doidata' => $doidata,
+                    'doidata'   => $doidata,
                 ]
             );
         } catch (\Exception $ex) {
             $this->log($ex);
         }
-
-
     }
 
-
-    private function log(\Exception $ex)
+    public function setAttributeOfReceiver($email, $attributeId, $value)
     {
-
-        $this->logger->info($ex->getMessage());
-
-    }
-
-
-    public function setAttributeOfReceiver($email,$attributeId,$value) {
         $this->connect();
+
         try {
-            $this->rest->put('/receivers.json/'.$email.'/attributes/'.$attributeId,
+            $this->rest->put(
+                '/receivers.json/' . $email . '/attributes/' . $attributeId,
                 [
                     'value' => $value,
                 ]
@@ -376,14 +355,15 @@ class Api
         } catch (\Exception $ex) {
             $this->log($ex);
         }
-
     }
 
-
-    public function deleteReceiver($email,$groupId = null) {
+    public function deleteReceiver($email, $groupId = null)
+    {
         $this->connect();
+
         try {
-            $this->rest->delete('/receivers.json/'.$email.'',
+            $this->rest->delete(
+                '/receivers.json/' . $email . '',
                 [
                     'group_id' => $groupId,
                 ]
@@ -391,8 +371,10 @@ class Api
         } catch (\Exception $ex) {
             $this->log($ex);
         }
-
     }
 
-
+    private function log(\Exception $ex)
+    {
+        $this->logger->error($ex->getMessage());
+    }
 }

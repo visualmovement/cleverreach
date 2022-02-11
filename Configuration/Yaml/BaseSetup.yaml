@@ -13,9 +13,9 @@ TYPO3:
 
           validatorsDefinition:
             CleverReachOptIn:
-              implementationClassName: 'WapplerSystems\Cleverreach\Form\Validator\OptinValidator'
+              implementationClassName: 'Supseven\Cleverreach\Form\Validator\OptinValidator'
             CleverReachOptOut:
-              implementationClassName: 'WapplerSystems\Cleverreach\Form\Validator\OptinValidator'
+              implementationClassName: 'Supseven\Cleverreach\Form\Validator\OptinValidator'
 
           formElementsDefinition:
 
@@ -127,7 +127,7 @@ TYPO3:
 
           finishersDefinition:
             Cleverreach:
-              implementationClassName: 'WapplerSystems\Cleverreach\Form\Finishers\CleverreachFinisher'
+              implementationClassName: 'Supseven\Cleverreach\Form\Finishers\CleverreachFinisher'
               formEditor:
                 iconIdentifier: 't3-form-icon-finisher'
                 label: 'CleverReach'

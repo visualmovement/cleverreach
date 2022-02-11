@@ -8,14 +8,14 @@ plugin.tx_powermail {
             native = 1
             server = 1
             customValidation {
-                120 = WapplerSystems\Cleverreach\Powermail\Validator\OptinValidator
-                121 = WapplerSystems\Cleverreach\Powermail\Validator\OptoutValidator
+                120 = Supseven\Cleverreach\Powermail\Validator\OptinValidator
+                121 = Supseven\Cleverreach\Powermail\Validator\OptoutValidator
             }
         }
 
         finishers {
             1 {
-                class = WapplerSystems\Cleverreach\Powermail\Finisher\CleverReach
+                class = Supseven\Cleverreach\Powermail\Finisher\CleverReach
                 config < plugin.tx_cleverreach.settings
                 config {
 

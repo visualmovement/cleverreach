@@ -1,7 +1,6 @@
 <?php
-
-namespace WapplerSystems\Cleverreach\Domain\Model;
-
+declare(strict_types=1);
+namespace Supseven\Cleverreach\Domain\Model;
 
 /**
  * This file is part of the "cleverreach" Extension for TYPO3 CMS.
@@ -9,8 +8,6 @@ namespace WapplerSystems\Cleverreach\Domain\Model;
  * For the full copyright and license information, please read the
  * LICENSE.txt file that was distributed with this source code.
  */
-
-
 class Receiver
 {
 
@@ -57,12 +54,10 @@ class Receiver
      */
     protected $orders = [];
 
-
     /**
      * @var array
      */
     protected $events = [];
-
 
     /**
      * Receiver constructor.
@@ -77,23 +72,21 @@ class Receiver
         $this->registered = time();
     }
 
-
     /**
      * @return array
      */
     public function toArray(): array
     {
         return [
-            'email' => $this->email,
-            'activated' => $this->activated,
-            'deactivated' => $this->deactivated,
-            'registered' => $this->registered,
-            'attributes' => $this->attributes,
+            'email'             => $this->email,
+            'activated'         => $this->activated,
+            'deactivated'       => $this->deactivated,
+            'registered'        => $this->registered,
+            'attributes'        => $this->attributes,
             'global_attributes' => $this->attributes,
-            'source' => 'TYPO3',
+            'source'            => 'TYPO3',
         ];
     }
-
 
     /**
      * @param \stdClass $obj
@@ -107,16 +100,16 @@ class Receiver
         $inst->deactivated = $obj->deactivated;
         $inst->attributes = (array)$obj->attributes;
         $inst->globalAttributes = (array)$obj->global_attributes;
+
         return $inst;
     }
-
 
     /**
      * @return bool
      */
     public function isActive(): bool
     {
-        return ($this->activated !== 0 && $this->deactivated === 0);
+        return $this->activated !== 0 && $this->deactivated === 0;
     }
 
     /**
@@ -262,6 +255,4 @@ class Receiver
     {
         $this->events = $events;
     }
-
-
 }
