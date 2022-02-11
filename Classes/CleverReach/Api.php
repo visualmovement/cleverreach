@@ -23,6 +23,8 @@ class Api implements LoggerAwareInterface
 
     public const MODE_OPTOUT = 'optout';
 
+    public $connected = false;
+
     /**
      * @var ConfigurationService
      */
@@ -33,19 +35,21 @@ class Api implements LoggerAwareInterface
 
     /**
      * @param ConfigurationService $configurationService
+     * @param Rest $rest
      */
-    public function __construct(ConfigurationService $configurationService)
+    public function __construct(ConfigurationService $configurationService, Rest $rest)
     {
         $this->configurationService = $configurationService;
+        $this->rest = $rest;
     }
 
     public function connect(): void
     {
-        if ($this->rest !== null) {
+        if ($this->connected) {
             return;
         }
 
-        $this->rest = new Rest($this->configurationService->getRestUrl());
+        $this->rest->init($this->configurationService->getRestUrl());
 
         try {
             //skip this part if you have an OAuth access token
@@ -58,6 +62,7 @@ class Api implements LoggerAwareInterface
                 ]
             );
             $this->rest->setAuthMode('bearer', $token);
+            $this->connected = true;
         } catch (\Exception $ex) {
             $this->log($ex);
         }
@@ -86,7 +91,7 @@ class Api implements LoggerAwareInterface
         if (\is_array($receivers)) {
             foreach ((array)$receivers as $receiver) {
                 if ($receiver instanceof Receiver) {
-                    $aReceivers[] = $receivers->toArray();
+                    $aReceivers[] = $receiver->toArray();
                 }
             }
         }

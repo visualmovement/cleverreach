@@ -27,6 +27,11 @@
             "Supseven\\Cleverreach\\": "Classes/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Supseven\\Cleverreach\\Tests\\": "Tests/"
+        }
+    },
     "extra": {
         "typo3/cms": {
             "extension-key": "cleverreach"
@@ -35,7 +40,8 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.6",
         "in2code/powermail": "^8.4",
-        "typo3/cms-form": "^10.4 || ^11.5"
+        "typo3/cms-form": "^10.4 || ^11.5",
+        "phpunit/phpunit": "^9.5"
     },
     "config": {
         "allow-plugins": {

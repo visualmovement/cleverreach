@@ -26,7 +26,7 @@ class Rest
     public $header = false;
     public $error = false;
 
-    public function __construct($url = 'http://nourl.com')
+    public function init(string $url): void
     {
         $this->url = rtrim($url, '/');
         $this->authModeSettings = new \stdClass();
