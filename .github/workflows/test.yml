@@ -35,6 +35,6 @@ jobs:
           jq 'del(.require)' composer.json | jq 'del(.["require-dev"])' > c.json
           rm -rf composer.lock vendor public composer.json
           mv c.json composer.json
-          composer require --ansi -n --no-progress --no-plugins --no-scripts typo3/cms-core:^${{ matrix.typo3 }} typo3/cms-frontend:^${{ matrix.typo3 }} typo3/cms-form:^${{ matrix.typo3 }} in2code/powermail
+          composer require --ansi -n --no-progress --no-plugins --no-scripts typo3/cms-core:^${{ matrix.typo3 }} typo3/cms-frontend:^${{ matrix.typo3 }} typo3/cms-form:^${{ matrix.typo3 }}
           composer require --dev --ansi -n --no-progress phpunit/phpunit:^9
           php vendor/bin/phpunit -c phpunit.xml
