@@ -2,9 +2,6 @@
 declare(strict_types=1);
 namespace Supseven\Cleverreach\Tools;
 
-use TYPO3\CMS\Core\Http\RequestFactory;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-
 /**
  * This file is part of the "cleverreach" Extension for TYPO3 CMS.
  *

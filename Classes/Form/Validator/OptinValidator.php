@@ -18,7 +18,6 @@ namespace Supseven\Cleverreach\Form\Validator;
 use Supseven\Cleverreach\CleverReach\Api;
 use Supseven\Cleverreach\Service\ConfigurationService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Validation\Validator\AbstractValidator;
 
 /**

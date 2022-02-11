@@ -12,8 +12,6 @@ namespace Supseven\Cleverreach\Form\Finishers;
 use Supseven\Cleverreach\CleverReach\Api;
 use Supseven\Cleverreach\Domain\Model\Receiver;
 use Supseven\Cleverreach\Service\ConfigurationService;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Form\Domain\Finishers\AbstractFinisher;
 use TYPO3\CMS\Form\Domain\Finishers\Exception\FinisherException;
 use TYPO3\CMS\Form\Domain\Model\FormElements\FormElementInterface;
