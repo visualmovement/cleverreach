@@ -21,3 +21,6 @@ services:
 
   Supseven\Cleverreach\Powermail\Finisher\CleverReach:
     public: true
+
+  Supseven\Cleverreach\CleverReach\Api:
+    public: true
