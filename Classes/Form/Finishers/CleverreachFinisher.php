@@ -66,12 +66,21 @@ class CleverreachFinisher extends AbstractFinisher
 
         $email = null;
         $attributes = [];
+        
+        // default value: always subscribe
+        $actionIsTriggered = true;
 
         foreach ($formValues as $identifier => $value) {
             $element = $this->finisherContext->getFormRuntime()->getFormDefinition()->getElementByIdentifier($identifier);
 
             if ($element !== null) {
                 $properties = $element->getProperties();
+                
+                if ($properties['cleverreachTrigger'] === true) {
+                    if ($value != true) {
+                        $actionIsTriggered = false;
+                    }
+                }
 
                 if (isset($properties['cleverreachField'])) {
                     switch ($properties['cleverreachField']) {
@@ -92,7 +101,7 @@ class CleverreachFinisher extends AbstractFinisher
         }
 
         if (isset($this->options['mode']) && $email != '') {
-            if (strtolower($this->options['mode']) === Api::MODE_OPTIN) {
+            if (strtolower($this->options['mode']) === Api::MODE_OPTIN && $actionIsTriggered) {
                 $receiver = new Receiver($email, $attributes);
                 $this->api->addReceiversToGroup($receiver, $groupId);
                 $this->api->sendSubscribeMail($email, $formId, $groupId);
