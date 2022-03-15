@@ -18,6 +18,15 @@ TYPO3:
               implementationClassName: 'Supseven\Cleverreach\Form\Validator\OptinValidator'
 
           formElementsDefinition:
+          
+            Checkbox:
+              formEditor:
+                editors:
+                  1901:
+                    identifier: 'cleverreachTrigger'
+                    templateName: 'Inspector-CheckboxEditor'
+                    label: 'CleverReach Trigger'
+                    propertyPath: 'properties.cleverreachTrigger'
 
             Text:
               formEditor:
